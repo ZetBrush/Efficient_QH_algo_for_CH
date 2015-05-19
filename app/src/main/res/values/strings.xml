@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Parallel Convex Hull</string>
+    <string name="action_contact">Contact</string>
+    <string name ="action_settings">About</string>
+    <string name="alpha_str">alpha animation button</string>
+    <string name="ease_str">ease animation button</string>
+    <string name="order_str">order animation button</string>
+    <string name="enter_str">enter animation button</string>
+    <string name="play_str">play animation button</string>
+
+</resources>
