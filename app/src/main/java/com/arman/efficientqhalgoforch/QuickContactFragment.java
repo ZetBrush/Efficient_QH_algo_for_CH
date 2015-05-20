@@ -82,8 +82,8 @@ public class QuickContactFragment extends DialogFragment {
 
 	public class ContactPagerAdapter extends PagerAdapter implements IconTabProvider {
 
-		private final int[] ICONS = { R.drawable.ic_launcher_gplus, R.drawable.ic_launcher_gmail,
-				R.drawable.ic_launcher_gmaps, R.drawable.ic_launcher_chrome };
+		private final int[] ICONS = {R.drawable.fb_ic, R.drawable.linkedin, R.drawable.ic_launcher_gmail,
+				 };
 
 		public ContactPagerAdapter() {
 			super();
@@ -102,15 +102,44 @@ public class QuickContactFragment extends DialogFragment {
 		@Override
 		public Object instantiateItem(ViewGroup container, int position) {
 			// looks a little bit messy here
-			TextView v = new TextView(getActivity());
-			v.setBackgroundResource(R.color.background_window);
-			v.setText("PAGE " + (position + 1));
-			final int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources()
-					.getDisplayMetrics());
-			v.setPadding(padding, padding, padding, padding);
-			v.setGravity(Gravity.CENTER);
-			container.addView(v, 0);
-			return v;
+			if(position==0){
+				TextView v = new TextView(getActivity());
+				v.setBackgroundResource(R.color.background_window);
+				v.setText("Arman Andreasyan " + ": https://www.facebook.com/zetbrush");
+				v.setClickable(true);
+				final int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources()
+						.getDisplayMetrics());
+				v.setPadding(padding, padding, padding, padding);
+				v.setGravity(Gravity.CENTER);
+				container.addView(v, 0);
+				return v;
+			}
+			if(position==1){
+				TextView v = new TextView(getActivity());
+				v.setBackgroundResource(R.color.background_window);
+				v.setText("Arman Andreasyan " + ": www.linkedin.com/in/zetbrush");
+				v.setClickable(true);
+				final int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources()
+						.getDisplayMetrics());
+				v.setPadding(padding, padding, padding, padding);
+				v.setGravity(Gravity.CENTER);
+				container.addView(v, 0);
+				return v;
+			}
+			if(position==2){
+				TextView v = new TextView(getActivity());
+				v.setBackgroundResource(R.color.background_window);
+				v.setText("Arman Andreasyan " + ": arman_andreasyan@edu.aua.am");
+				v.setClickable(true);
+				final int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources()
+						.getDisplayMetrics());
+				v.setPadding(padding, padding, padding, padding);
+				v.setGravity(Gravity.CENTER);
+				container.addView(v, 0);
+				return v;
+			}
+			return null;
+
 		}
 
 		@Override

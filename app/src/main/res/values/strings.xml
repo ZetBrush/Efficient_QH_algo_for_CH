@@ -10,4 +10,110 @@
     <string name="enter_str">enter animation button</string>
     <string name="play_str">play animation button</string>
 
+
+    <string name="maintext1">
+        Here is represented and introduced  multi-core implementations
+of divide and conquer algorithms and showed its efficiency
+and ease of use by applying it to the fundamental geometric
+problem of computing the convex hull of a point
+set. In general the framework can easily be
+used for any DC-algorithm, which we done by applying to GrahamScan algorithm for benchmarking </string>
+
+    <string name="dcalgo"> Divide and conquer algorithms solve problems by dividing
+them into subproblems, solving each subproblem
+recursively and merging the corresponding results
+to a complete solution. All subproblems have exactly
+the same structure as the original problem and can be
+solved independently from each other, and so can easily
+be distributed over a number of parallel processes
+or threads.
+        However, in general it can not
+be guaranteed that always enough subproblems exist,
+which leads to non-optimal speedups. This is in particular
+true for the first divide step and the final merging
+step but is also a problem in cases where the recursion
+tree is unbalanced such that the number of open
+sub-problems is smaller than the number of available
+threads.
+Therefore, it is important that the divide and merge
+steps are solved in parallel when free threads are available,
+i.e. whenever the current number of sub-problems
+is smaller than number of available threads. Our framework
+basically implements a management system that
+assigns jobs to threads in such a way that all cpu cores
+are busy.
+</string>
+
+    <string name="jobintro">
+        Jobs for smaller sub-problems are created in the divide
+steps. As soon as the size of a job is smaller than a
+given constant it is called a leaf job which is solved directly
+without further recursion. As soon as all children
+of a job have been solved the merge step of the DC algorithm
+is applied and computes the result of the entire
+problem by combining the results of its children.
+In this way jobs represent sub-problems as well as
+the corresponding solutions. Note that the result of
+a job is either contained in the corresponding interval
+of the input container or has to be represented in a
+separate data structure, e.g. a separate list of objects.</string>
+
+    <string name="quickhull">  Authors show how to define a job class qh_job implementing
+the well-known Quickhull algorithm for computing
+the convex hull of a point set. For simplicity is considered
+a version of the algorithm that only computes the upper
+hull of the given point set and we assume that the input
+is give by a pair of iterators left and right into an
+array of points such that left contains the minimal
+and right the maximal point in the lexicographical xy ordering.
+The result of a qh_job instance is the sequence
+of points of the upper hull lying between left and right.
+In this scenario any job of size two (only the leftmost
+and rightmost point) represents a leaf problem and has
+the empty list as result. Consequently, the handle leaf
+ operation is trivial (keeping an empty result list).
+The divide operation is using two auxiliary functions:
+farthest_point(l,r) computes a point between
+l and r with maximal distance to the line segment (l, r)
+and partition triangle implements the partition step
+of quickhull as shown in Figure 1 and returns the generated
+sub-problems as a list of jobs. In particular partition function is implemented one using
+only one thread and one using all available threads.
+The latter version is similar to the parallel partition
+strategy for a multi-core implementation
+of Quicksort. In the experiments we will
+see that this can have a dramatic effect on the speedup
+achieved.
+Finally, the merge operation takes a list of (two) jobs
+as input, concatenates their result lists, and inserts the
+right-most point of the first problem in between. The
+complete implementation is given by the following piece
+of C++ code.
+
+
+    </string>
+
+
+    <string name="solver1">  Framework decribed in CCCG 2008, Montr´eal, Qu´ebec, August 13–15, 2008, provides different solvers which can be
+used to compute the result of a job. As a very basic
+and simple example is given the code for a generic serial
+recursive solver. It can simply be implemented by a
+C++ function template.</string>
+
+    <string name="solver2">solve_recursive is a generic dc-solver. It
+accepts any job type job that implements the dc job
+interface. We can now use it easily to implement a serial
+quickhull function taking an array of points as input.
+</string>
+
+    <string name="solver4">It is an easy exercise to write a non-recursive version
+of this serial solver: simply push all jobs created
+by divide operations on a stack and use an inner loop
+processing all jobs on the stack.
+</string>
+    <string name="solver5">These framework and algorithm is introduced in CCCG 2008, Montr´eal, Qu´ebec, August 13–15, 2008,
+        Further, we used this logic to implement multithreaded QuickHull and GrahamScan algorithms for Android platform, now you can test different configuration of
+        Threads/Points and canvas size.
+
+</string>
 </resources>

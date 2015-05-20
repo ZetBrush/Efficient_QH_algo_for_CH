@@ -88,7 +88,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="support-v4-19.0.0" level="project" />
     <orderEntry type="library" exported="" name="mpandroidchartlibrary-2-1-0" level="project" />
-    <orderEntry type="module" module-name="cartlib" exported="" />
     <orderEntry type="module" module-name="library" exported="" />
   </component>
 </module>

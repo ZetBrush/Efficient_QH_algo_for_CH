@@ -51,6 +51,9 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.Highlight;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -145,7 +148,7 @@ public class SuperAwesomeCardFragment extends Fragment implements OnChartValueSe
 			reset.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					for(DataHolder hld :mResults) {
+					for (DataHolder hld : mResults) {
 						mResults.remove(hld);
 					}
 
@@ -159,14 +162,13 @@ public class SuperAwesomeCardFragment extends Fragment implements OnChartValueSe
 			return vv;
 		} else if (position == 3) {
 
-			View v = inflater.inflate(R.layout.benchmark_lay, null);
+			final View vv = inflater.inflate(R.layout.benchmark_lay, null);
 
-			((TextView) v.findViewById(R.id.nametxt)).setText("             GrahamScan\n Multithreaded Benchmark");
+			((TextView) vv.findViewById(R.id.nametxt)).setText("             GrahamScan\n Multithreaded Benchmark");
 
-			algorithmIndex = 3;
 
-			Button run = (Button) v.findViewById(R.id.runAlgor);
-			Button resetgr = (Button) v.findViewById(R.id.cleardata);
+			Button run = (Button) vv.findViewById(R.id.runAlgor);
+			Button resetgr = (Button) vv.findViewById(R.id.cleardata);
 			run.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -174,10 +176,10 @@ public class SuperAwesomeCardFragment extends Fragment implements OnChartValueSe
 					EditText points;
 					EditText canvasY;
 					EditText canvasX;
-					thrd = (EditText) v.findViewById(R.id.numberTreadstxt);
-					points = (EditText) v.findViewById(R.id.numberpoints);
-					canvasX = (EditText) v.findViewById(R.id.canvasWidth);
-					canvasY = (EditText) v.findViewById(R.id.canvasHeight);
+					thrd = (EditText) vv.findViewById(R.id.numberTreadstxt);
+					points = (EditText) vv.findViewById(R.id.numberpoints);
+					canvasX = (EditText) vv.findViewById(R.id.canvasWidth);
+					canvasY = (EditText) vv.findViewById(R.id.canvasHeight);
 					int threads = Integer.valueOf(thrd.getText().toString());
 					int ponts = Integer.valueOf(points.getText().toString());
 					int canvY = Integer.valueOf(canvasY.getText().toString());
@@ -208,73 +210,73 @@ public class SuperAwesomeCardFragment extends Fragment implements OnChartValueSe
 						}
 					});
 					gh.run();
+					algorithmIndex = 3;
 
-					doHardcore(v, inflater);
 
-				}});
+				}
+			});
 
-				resetgr.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						for(DataHolder hld : mGResults){
-							mGResults.remove(hld);
-						}
-						updateChart(mGResults);
+			resetgr.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					for (DataHolder hld : mGResults) {
+						mGResults.remove(hld);
 					}
-				});
+					updateChart(mGResults);
+				}
+			});
+			doHardcore(vv, inflater);
 
 
-
-				return v;
+			return vv;
 
 		} else {
 
-
-			LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-
-			FrameLayout fl = new FrameLayout(getActivity());
-			fl.setLayoutParams(params);
-
-			final int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources()
-					.getDisplayMetrics());
-
-			TextView v = new TextView(getActivity());
-			params.setMargins(margin, margin, margin, margin);
-			v.setLayoutParams(params);
-			v.setLayoutParams(params);
-			v.setGravity(Gravity.CENTER);
-			v.setBackgroundResource(R.drawable.background_card);
-			v.setText("CARD " + (position + 1));
-			Button btn = new Button(getActivity());
-			btn.setText("Run");
-
-			btn.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					final Point2DCloud point2DCloud = new Point2DCloud(getActivity(), 20 /* points */,
-							Utils.WIDTH = 700,
-							Utils.HEIGHT = 700, true);
+			if (position == 0) {
 
 
-					int animTime = 10;
-					QuickHull qh = new QuickHull(point2DCloud, 6, true, animTime, new DoneListener() {
-						@Override
-						public void jobDone(int id,float time) {
+				LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
-						}
-					});
-					qh.run();
+				FrameLayout fl = new FrameLayout(getActivity());
+				fl.setLayoutParams(params);
 
-				}
+				final int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources()
+						.getDisplayMetrics());
+
+				View v = (View) inflater.inflate(R.layout.intro, null);
+				params.setMargins(margin, margin, margin, margin);
+				v.setLayoutParams(params);
+				v.setLayoutParams(params);
+				//v.setBackgroundResource(R.drawable.background_card);
 
 
-			});
+				fl.addView(v);
+				//fl.addView(btn);
+				return fl;
+			} else if (position == 1) {
+				LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
-			fl.addView(v);
-			fl.addView(btn);
-			return fl;
-		}
+				FrameLayout fl = new FrameLayout(getActivity());
+				fl.setLayoutParams(params);
+
+				final int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources()
+						.getDisplayMetrics());
+
+				View v = (View) inflater.inflate(R.layout.algo, null);
+				params.setMargins(margin, margin, margin, margin);
+				v.setLayoutParams(params);
+				v.setLayoutParams(params);
+				//v.setBackgroundResource(R.drawable.background_card);
+
+				fl.addView(v);
+
+				return fl;
+			}
+
+			}
+		return null;
 	}
+
 
 	public void doHardcore(View v, final LayoutInflater inflater) {
 		tvX = (TextView) v.findViewById(R.id.tvXMax);
@@ -314,7 +316,6 @@ public class SuperAwesomeCardFragment extends Fragment implements OnChartValueSe
 		xl.setDrawGridLines(false);
 
 	}
-
 
 
 
@@ -394,25 +395,27 @@ public class SuperAwesomeCardFragment extends Fragment implements OnChartValueSe
 
 		ArrayList<Entry> yVals1 = new ArrayList<Entry>();
 		ArrayList<String> xVals = new ArrayList<String>();
+		for (int i=0; i< 25	;i++){
+			xVals.add(i+"");
+		}
 		ArrayList<Entry> yValspoint = new ArrayList<Entry>();
 		for (int i = 0; i < holdder.size(); i++) {
-			xVals.add(String.valueOf(holdder.get(i).getThread()));
-			yVals1.add(new Entry((holdder.get(i).getTime()),Integer.valueOf(xVals.get(i))));
-			yValspoint.add(new Entry((holdder.get(i).getPoints()),Integer.valueOf(xVals.get(i))));
+
+			yVals1.add(new Entry((holdder.get(i).getTime()), Integer.valueOf(xVals.get(xVals.indexOf( String.valueOf(holdder.get(i).getThread()))))));
+
 		}
 
 		ArrayList<ScatterDataSet> dataSets = new ArrayList<ScatterDataSet>();
 
 
 		// create a dataset and give it a type
-		ScatterDataSet set1 = new ScatterDataSet(yVals1, "Latency");
+		ScatterDataSet set1 = new ScatterDataSet(yVals1, "Result");
 		set1.setScatterShape(ScatterChart.ScatterShape.SQUARE);
 		set1.setColor(ColorTemplate.COLORFUL_COLORS[0]);
 		set1.setScatterShapeSize(8f);
 
 
 		dataSets.add(set1); // add the datasets
-
 
 		// create a data object with the datasets
 		ScatterData data = new ScatterData(xVals, dataSets);

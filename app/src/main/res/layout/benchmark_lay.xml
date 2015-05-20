@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#ffd2ffe7">
 
     <TextView
         android:layout_width="wrap_content"
@@ -11,7 +12,8 @@
         android:textSize="20sp"
         android:layout_gravity="center_horizontal"
         android:id="@+id/nametxt"
-        />
+        android:textColor="#ffff8a00"
+        android:textStyle="bold" />
 
 <LinearLayout
     android:layout_width="match_parent"
@@ -27,10 +29,11 @@
        android:orientation="horizontal">
 
        <LinearLayout
-           android:layout_width="wrap_content"
+           android:layout_width="0dp"
            android:layout_height="wrap_content"
            android:orientation="horizontal"
-           android:id="@+id/first"    >
+           android:id="@+id/first"
+           android:layout_weight="1">
            <TextView
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
@@ -50,8 +53,9 @@
 
 
        <LinearLayout
-           android:layout_width="wrap_content"
+           android:layout_width="0dp"
            android:layout_height="wrap_content"
+           android:layout_weight="1"
            android:orientation="horizontal"
            android:id="@+id/second">
 
@@ -75,22 +79,24 @@
 
 
        <LinearLayout
-           android:layout_width="match_parent"
+
            android:layout_height="wrap_content"
-           android:orientation="horizontal">
+           android:orientation="horizontal"
+           android:layout_width="match_parent"
+           >
 
            <LinearLayout
-               android:layout_width="wrap_content"
+               android:layout_width="0dp"
                android:layout_height="wrap_content"
                android:id="@+id/third"
-               android:orientation="horizontal">
+               android:orientation="horizontal"
+               android:layout_weight="1">
 
                <TextView
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:textAppearance="?android:attr/textAppearanceMedium"
                    android:text="Y-size   "
-                   android:layout_toStartOf="@id/numberTreadstxt"
                    android:layout_gravity="center_horizontal" />
 
                <EditText
@@ -103,8 +109,11 @@
            </LinearLayout>
 
            <LinearLayout
-               android:layout_width="wrap_content"
+               android:layout_width="0dp"
                android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:orientation="horizontal"
+               android:layout_marginLeft="20dp"
                >
 
                <TextView
@@ -112,11 +121,10 @@
                    android:layout_height="wrap_content"
                    android:textAppearance="?android:attr/textAppearanceMedium"
                    android:text="X-size   "
-                   android:layout_toStartOf="@id/numberTreadstxt"
                    android:layout_gravity="center_horizontal" />
 
                <EditText
-                   android:layout_marginLeft="30dp"
+
                    android:layout_width="100dp"
                    android:layout_height="wrap_content"
                    android:inputType="number"
@@ -154,6 +162,7 @@
         android:layout_marginTop="10dp"
         android:id="@+id/cleardata" />
 </LinearLayout>
+
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
@@ -161,7 +170,8 @@
         android:id="@+id/chart1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/tvXMax" />
 
 
 
