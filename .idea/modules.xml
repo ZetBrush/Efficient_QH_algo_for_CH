@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/EfficientQHalgoforCH.iml" filepath="$PROJECT_DIR$/EfficientQHalgoforCH.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Efficient_QH_algo_for_CH.iml" filepath="$PROJECT_DIR$/Efficient_QH_algo_for_CH.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/cartlib/cartlib.iml" filepath="$PROJECT_DIR$/cartlib/cartlib.iml" />
       <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />

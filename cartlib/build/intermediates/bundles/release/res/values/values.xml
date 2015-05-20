@@ -2,7 +2,7 @@
 <resources>
     <declare-styleable name="BarChartAttrs"><attr format="dimension" name="chart_barSpacing"/><attr format="dimension" name="chart_setSpacing"/></declare-styleable>
     <declare-styleable name="ChartAttrs"><attr format="dimension" name="chart_axisThickness"/><attr format="reference|color" name="chart_axisColor"/><attr format="dimension" name="chart_axisBorderSpacing"/><attr format="dimension" name="chart_axisTopSpacing"/><attr format="boolean" name="chart_labels"/><attr format="reference|color" name="chart_labelColor"/><attr format="dimension" name="chart_fontSize"/><attr format="string" name="chart_typeface"/><attr format="reference|color" name="chart_shadowColor"/><attr format="dimension" name="chart_shadowDx"/><attr format="dimension" name="chart_shadowDy"/><attr format="dimension" name="chart_shadowRadius"/></declare-styleable>
-    <!-- From: file:/C:/Users/Arman/EfficientQHalgoforCH/cartlib/res/values/dimens.xml -->
+    <!-- From: file:/Users/intern/Documents/Efficient_QH_algo_for_CH/cartlib/res/values/dimens.xml -->
     <eat-comment/>
     <dimen name="axis_border_spacing">10dp</dimen>
     <dimen name="axis_dist_from_label">5dp</dimen>

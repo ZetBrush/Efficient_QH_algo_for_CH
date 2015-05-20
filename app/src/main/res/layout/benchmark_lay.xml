@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="               QuickHull\n Multithreaded Benchmark"
-        android:textSize="25sp"
+        android:textSize="20sp"
         android:layout_gravity="center_horizontal"
         android:id="@+id/nametxt"
         />
@@ -18,7 +18,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:id="@+id/paramrelative"
-    android:layout_marginTop="20dp">
+    android:layout_marginTop="17dp">
 
 
    <LinearLayout
@@ -134,13 +134,26 @@
 </LinearLayout>
 
 
-
+<LinearLayout
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="horizontal">
     <Button
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:text="Run"
         android:layout_marginTop="10dp"
         android:id="@+id/runAlgor" />
+
+    <Button
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:text="Reset"
+        android:layout_marginTop="10dp"
+        android:id="@+id/cleardata" />
+</LinearLayout>
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
@@ -148,55 +161,34 @@
         android:id="@+id/chart1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/seekBar1" />
+        />
 
-    <SeekBar
-        android:id="@+id/seekBar2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_margin="8dp"
-        android:layout_toLeftOf="@+id/tvYMax"
-        android:layout_marginRight="5dp"
-        android:max="200"
-        android:paddingBottom="12dp" />
 
-    <SeekBar
-        android:id="@+id/seekBar1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/seekBar2"
-        android:layout_margin="8dp"
-        android:layout_marginBottom="35dp"
-        android:layout_toLeftOf="@+id/tvXMax"
-        android:layout_marginRight="5dp"
-        android:max="500"
-        android:paddingBottom="12dp" />
 
     <TextView
         android:id="@+id/tvXMax"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/seekBar1"
         android:layout_alignParentRight="true"
-        android:text="200"
+        android:text="Threads"
         android:layout_marginBottom="15dp"
         android:layout_marginRight="10dp"
         android:gravity="right"
+        android:textSize="12sp"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <TextView
-        android:id="@+id/tvYMax"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/seekBar2"
-        android:layout_alignParentRight="true"
-        android:text="200"
-        android:layout_marginBottom="15dp"
-        android:layout_marginRight="10dp"
-        android:gravity="right"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        <TextView
+            android:id="@+id/tvYMax"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignBottom="@id/chart1"
+            android:text="Time"
+            android:layout_marginBottom="15dp"
+            android:layout_marginRight="10dp"
+            android:gravity="right"
+            android:textSize="12sp"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
     </RelativeLayout>
 
 

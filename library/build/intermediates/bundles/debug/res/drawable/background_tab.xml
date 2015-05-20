@@ -5,4 +5,4 @@
     <item android:state_focused="true" android:drawable="@color/background_tab_pressed"/>
     <item android:drawable="@android:color/transparent"/>
 
-</selector><!-- From: file:/C:/Users/Arman/EfficientQHalgoforCH/library/res/drawable/background_tab.xml -->
+</selector><!-- From: file:/Users/intern/Documents/Efficient_QH_algo_for_CH/library/res/drawable/background_tab.xml -->

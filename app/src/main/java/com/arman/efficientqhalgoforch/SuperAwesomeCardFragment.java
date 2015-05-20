@@ -16,155 +16,61 @@
 
 package com.arman.efficientqhalgoforch;
 
-import android.animation.TimeInterpolator;
-import android.annotation.SuppressLint;
-import android.app.Application;
-import android.content.DialogInterface;
-import android.graphics.DashPathEffect;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.os.Build;
+import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
-import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.arman.efficientqhalgoforch.algo.GrahamScanParallel;
 import com.arman.efficientqhalgoforch.algo.QuickHull;
 import com.arman.efficientqhalgoforch.common.Point2DCloud;
 import com.arman.efficientqhalgoforch.common.Utils;
 import com.arman.efficientqhalgoforch.external.DoneListener;
-import com.db.chart.Tools;
-import com.db.chart.listener.OnEntryClickListener;
-import com.db.chart.model.LineSet;
-import com.db.chart.view.LineChartView;
-import com.db.chart.view.XController;
-import com.db.chart.view.YController;
-import com.db.chart.view.animation.Animation;
-import com.db.chart.view.animation.easing.BaseEasingMethod;
-import com.db.chart.view.animation.easing.bounce.BounceEaseOut;
-import com.db.chart.view.animation.easing.cubic.CubicEaseOut;
-import com.db.chart.view.animation.easing.elastic.ElasticEaseOut;
-import com.db.chart.view.animation.easing.quint.QuintEaseOut;
-import com.db.chart.view.animation.style.DashAnimation;
+import com.github.mikephil.charting.charts.ScatterChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.DataSet;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.ScatterData;
+import com.github.mikephil.charting.data.ScatterDataSet;
+import com.github.mikephil.charting.data.filter.Approximator;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.Highlight;
 
-import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-public class SuperAwesomeCardFragment extends Fragment {
-	final TimeInterpolator enterInterpolator = new DecelerateInterpolator(1.5f);
-	final TimeInterpolator exitInterpolator = new AccelerateInterpolator();
-	public static LinkedList<Double> timeResultQuick = new LinkedList<>();
-	public static LinkedList<Integer> threadCountQuick = new LinkedList<>();
-	public static LinkedList<Double> timeResultGraham = new LinkedList<>();
-	public static LinkedList<Integer> threadCountGraham = new LinkedList<>();
+public class SuperAwesomeCardFragment extends Fragment implements OnChartValueSelectedListener {
+
+
+	public static CopyOnWriteArrayList<DataHolder> mResults = new CopyOnWriteArrayList<>();
+	public static CopyOnWriteArrayList<DataHolder> mGResults = new CopyOnWriteArrayList<>();
 	public static int algorithmIndex = 0;
+	private ScatterChart mChart;
+	private TextView tvX, tvY;
+	private Typeface tf;
 
-
-	/**
-	 * Play
-	 */
-	static ImageButton mPlayBtn;
-
-	/**
-	 * Order
-	 */
-	private static ImageButton mOrderBtn;
-	private final static int[] beginOrder = {0, 1, 2, 3, 4, 5, 6};
-	private final static int[] middleOrder = {3, 2, 4, 1, 5, 0, 6};
-	private final static int[] endOrder = {6, 5, 4, 3, 2, 1, 0};
-	private static float mCurrOverlapFactor;
-	private static int[] mCurrOverlapOrder;
-	private static float mOldOverlapFactor;
-	private static int[] mOldOverlapOrder;
-
-
-	/**
-	 * Ease
-	 */
-	private static ImageButton mEaseBtn;
-	private static BaseEasingMethod mCurrEasing;
-	private static BaseEasingMethod mOldEasing;
-
-
-	/**
-	 * Enter
-	 */
-	private static ImageButton mEnterBtn;
-	private static float mCurrStartX;
-	private static float mCurrStartY;
-	private static float mOldStartX;
-	private static float mOldStartY;
-
-
-	/**
-	 * Alpha
-	 */
-	private static ImageButton mAlphaBtn;
-	private static int mCurrAlpha;
-	private static int mOldAlpha;
-
-
-	private Handler mHandler;
-
-	private final Runnable mEnterEndAction = new Runnable() {
-		@Override
-		public void run() {
-			mPlayBtn.setEnabled(true);
-		}
-	};
-
-	private final Runnable mExitEndAction = new Runnable() {
-		@Override
-		public void run() {
-			mHandler.postDelayed(new Runnable() {
-				public void run() {
-					mOldOverlapFactor = mCurrOverlapFactor;
-					mOldOverlapOrder = mCurrOverlapOrder;
-					mOldEasing = mCurrEasing;
-					mOldStartX = mCurrStartX;
-					mOldStartY = mCurrStartY;
-					mOldAlpha = mCurrAlpha;
-					updateLineChart();
-
-				}
-			}, 500);
-		}
-	};
-
-	private boolean mNewInstance;
-
-	private final static int LINE_MAX = 25;
-	private final static int LINE_MIN = 1;
-
-	private  static String[] lineLabels = DtoString(timeResultQuick);
-	private  static float[][] lineValues = {ItoFloat(threadCountQuick),
-			ItoFloat(threadCountGraham)};
-	private static LineChartView mLineChart;
-	private Paint mLineGridPaint;
-	private TextView mLineTooltip;
 
 
 	private static final String ARG_POSITION = "position";
 
 	private int position;
 
-	public void initscores(){
-		lineLabels = DtoString(timeResultQuick);
-		lineValues = new float[][]{ItoFloat(threadCountQuick),ItoFloat(threadCountGraham)};
-		}
+
 
 	public static SuperAwesomeCardFragment newInstance(int position) {
 		SuperAwesomeCardFragment f = new SuperAwesomeCardFragment();
@@ -186,21 +92,9 @@ public class SuperAwesomeCardFragment extends Fragment {
 
 		if (position == 2) {
 			final View vv = inflater.inflate(R.layout.benchmark_lay, null);
-			mNewInstance = false;
-			mCurrOverlapFactor = 1;
-			mCurrEasing = new QuintEaseOut();
-			mCurrStartX = -1;
-			mCurrStartY = 0;
-			mCurrAlpha = -1;
-
-			mOldOverlapFactor = 1;
-			mOldEasing = new QuintEaseOut();
-			mOldStartX = -1;
-			mOldStartY = 0;
-			mOldAlpha = -1;
-			mHandler = new Handler();
 
 			Button run = (Button) vv.findViewById(R.id.runAlgor);
+			Button reset = (Button) vv.findViewById(R.id.cleardata);
 			run.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -231,18 +125,32 @@ public class SuperAwesomeCardFragment extends Fragment {
 
 
 					int animTime = 10;
+					final int finalThreads = threads;
+					final int finalPonts = ponts;
 					QuickHull qh = new QuickHull(point2DCloud, threads, true, animTime, new DoneListener() {
 						@Override
-						public void jobDone(int id) {
-							initscores();
-							updateValues(new LineChartView(getActivity()));
-							updateLineChart();
+						public void jobDone(int id, float time) {
+							mResults.add(new DataHolder(finalThreads, time, finalPonts));
+							updateChart(mResults);
+
 						}
 					});
 					qh.run();
 					algorithmIndex = 2;
-					threadCountQuick.add(threads);
-					threadCountGraham.add(threads);
+
+
+				}
+			});
+
+			reset.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					for(DataHolder hld :mResults) {
+						mResults.remove(hld);
+					}
+
+					updateChart(mResults);
+
 				}
 			});
 			doHardcore(vv, inflater);
@@ -252,29 +160,72 @@ public class SuperAwesomeCardFragment extends Fragment {
 		} else if (position == 3) {
 
 			View v = inflater.inflate(R.layout.benchmark_lay, null);
-			mNewInstance = false;
-			mCurrOverlapFactor = 1;
-			mCurrEasing = new QuintEaseOut();
-			mCurrStartX = -1;
-			mCurrStartY = 0;
-			mCurrAlpha = -1;
 
-			mOldOverlapFactor = 1;
-			mOldEasing = new QuintEaseOut();
-			mOldStartX = -1;
-			mOldStartY = 0;
-			mOldAlpha = -1;
-			mHandler = new Handler();
-			((TextView) v.findViewById(R.id.nametxt)).setText("               GrahamScan\n Multithreaded Benchmark");
-
+			((TextView) v.findViewById(R.id.nametxt)).setText("             GrahamScan\n Multithreaded Benchmark");
 
 			algorithmIndex = 3;
 
-			doHardcore(v, inflater);
+			Button run = (Button) v.findViewById(R.id.runAlgor);
+			Button resetgr = (Button) v.findViewById(R.id.cleardata);
+			run.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					EditText thrd;
+					EditText points;
+					EditText canvasY;
+					EditText canvasX;
+					thrd = (EditText) v.findViewById(R.id.numberTreadstxt);
+					points = (EditText) v.findViewById(R.id.numberpoints);
+					canvasX = (EditText) v.findViewById(R.id.canvasWidth);
+					canvasY = (EditText) v.findViewById(R.id.canvasHeight);
+					int threads = Integer.valueOf(thrd.getText().toString());
+					int ponts = Integer.valueOf(points.getText().toString());
+					int canvY = Integer.valueOf(canvasY.getText().toString());
+					int canvX = Integer.valueOf(canvasX.getText().toString());
+
+					if (threads < 1)
+						threads = 1;
+					if (ponts <= 2) ponts = 3;
+					if (threads > ponts) threads = ponts - 1;
+					if (threads > 25) threads = 25;
+					if (canvX + 100 < ponts) canvX = canvX + 100;
+					if (canvY + 100 < ponts) canvY = canvY + 100;
+
+					final Point2DCloud point2DCloud = new Point2DCloud(getActivity(), ponts /* points */,
+							Utils.WIDTH = canvY,
+							Utils.HEIGHT = canvX, true);
 
 
-			return v;
+					int animTime = 10;
+					final int finalThreads = threads;
+					final int finalPonts = ponts;
+					GrahamScanParallel gh = new GrahamScanParallel(point2DCloud, threads, true, animTime, new DoneListener() {
+						@Override
+						public void jobDone(int id, float time) {
+							mGResults.add(new DataHolder(finalThreads, time, finalPonts));
+							updateChart(mGResults);
 
+						}
+					});
+					gh.run();
+
+					doHardcore(v, inflater);
+
+				}});
+
+				resetgr.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						for(DataHolder hld : mGResults){
+							mGResults.remove(hld);
+						}
+						updateChart(mGResults);
+					}
+				});
+
+
+
+				return v;
 
 		} else {
 
@@ -308,7 +259,7 @@ public class SuperAwesomeCardFragment extends Fragment {
 					int animTime = 10;
 					QuickHull qh = new QuickHull(point2DCloud, 6, true, animTime, new DoneListener() {
 						@Override
-						public void jobDone(int id) {
+						public void jobDone(int id,float time) {
 
 						}
 					});
@@ -326,387 +277,172 @@ public class SuperAwesomeCardFragment extends Fragment {
 	}
 
 	public void doHardcore(View v, final LayoutInflater inflater) {
+		tvX = (TextView) v.findViewById(R.id.tvXMax);
 
-		final OnEntryClickListener lineEntryListener = new OnEntryClickListener() {
-			@Override
-			public void onClick(int setIndex, int entryIndex, Rect rect) {
+		mChart = (ScatterChart) v.findViewById(R.id.chart1);
+		mChart.setDescription("");
 
-				if (mLineTooltip == null)
-					showLineTooltip(inflater, setIndex, entryIndex, rect);
-				else
-					dismissLineTooltip(inflater, setIndex, entryIndex, rect);
-			}
-		};
+		tf = Typeface.createFromAsset((SuperAwesomeCardFragment.this).getActivity().getAssets(), "OpenSans-Regular.ttf");
 
-		final View.OnClickListener lineClickListener = new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (mLineTooltip != null)
-					dismissLineTooltip(inflater, -1, -1, null);
-			}
-		};
-		initMenu(v);
-		initLineChart(v, lineEntryListener, lineClickListener);
-		updateLineChart();
+		mChart.setOnChartValueSelectedListener(this);
+
+		mChart.setDrawGridBackground(false);
+
+		mChart.setTouchEnabled(true);
+		mChart.setHighlightEnabled(true);
+
+		// enable scaling and dragging
+		mChart.setDragEnabled(true);
+		mChart.setScaleEnabled(true);
+
+		mChart.setMaxVisibleValueCount(200);
+		mChart.setPinchZoom(true);
+
+
+
+		Legend l = mChart.getLegend();
+		l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
+		l.setTypeface(tf);
+
+		YAxis yl = mChart.getAxisLeft();
+		yl.setTypeface(tf);
+
+		mChart.getAxisRight().setEnabled(false);
+
+		XAxis xl = mChart.getXAxis();
+		xl.setTypeface(tf);
+		xl.setDrawGridLines(false);
+
 	}
+
+
+
+
+
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		switch (item.getItemId()) {
+			case R.id.actionToggleValues: {
+				for (DataSet<?> set : mChart.getData().getDataSets())
+					set.setDrawValues(!set.isDrawValuesEnabled());
+
+				mChart.invalidate();
+				break;
+			}
+			case R.id.actionToggleHighlight: {
+				if (mChart.isHighlightEnabled())
+					mChart.setHighlightEnabled(false);
+				else
+					mChart.setHighlightEnabled(true);
+				mChart.invalidate();
+				break;
+			}
+			case R.id.actionTogglePinch: {
+				if (mChart.isPinchZoomEnabled())
+					mChart.setPinchZoom(false);
+				else
+					mChart.setPinchZoom(true);
+
+				mChart.invalidate();
+				break;
+			}
+			case R.id.actionToggleStartzero: {
+				mChart.getAxisLeft().setStartAtZero(!mChart.getAxisLeft().isStartAtZeroEnabled());
+				mChart.getAxisRight().setStartAtZero(!mChart.getAxisRight().isStartAtZeroEnabled());
+				mChart.invalidate();
+				break;
+			}
+			case R.id.actionToggleFilter: {
+
+				Approximator a = new Approximator(Approximator.ApproximatorType.DOUGLAS_PEUCKER, 25);
+
+				if (!mChart.isFilteringEnabled()) {
+					mChart.enableFiltering(a);
+				} else {
+					mChart.disableFiltering();
+				}
+				mChart.invalidate();
+				break;
+			}
+			case R.id.actionSave: {
+				// mChart.saveToGallery("title"+System.currentTimeMillis());
+				mChart.saveToPath("title" + System.currentTimeMillis(), "");
+				break;
+			}
+			case R.id.animateX: {
+				mChart.animateX(3000);
+				break;
+			}
+			case R.id.animateY: {
+				mChart.animateY(3000);
+				break;
+			}
+			case R.id.animateXY: {
+
+				mChart.animateXY(3000, 3000);
+				break;
+			}
+		}
+		return true;
+	}
+
+
+	public void updateChart(CopyOnWriteArrayList<DataHolder> holdder){
+
+
+		ArrayList<Entry> yVals1 = new ArrayList<Entry>();
+		ArrayList<String> xVals = new ArrayList<String>();
+		ArrayList<Entry> yValspoint = new ArrayList<Entry>();
+		for (int i = 0; i < holdder.size(); i++) {
+			xVals.add(String.valueOf(holdder.get(i).getThread()));
+			yVals1.add(new Entry((holdder.get(i).getTime()),Integer.valueOf(xVals.get(i))));
+			yValspoint.add(new Entry((holdder.get(i).getPoints()),Integer.valueOf(xVals.get(i))));
+		}
+
+		ArrayList<ScatterDataSet> dataSets = new ArrayList<ScatterDataSet>();
+
+
+		// create a dataset and give it a type
+		ScatterDataSet set1 = new ScatterDataSet(yVals1, "Latency");
+		set1.setScatterShape(ScatterChart.ScatterShape.SQUARE);
+		set1.setColor(ColorTemplate.COLORFUL_COLORS[0]);
+		set1.setScatterShapeSize(8f);
+
+
+		dataSets.add(set1); // add the datasets
+
+
+		// create a data object with the datasets
+		ScatterData data = new ScatterData(xVals, dataSets);
+		data.setValueTypeface(tf);
+
+		mChart.setData(data);
+		mChart.invalidate();
+
+	}
+
+
+
+	@Override
+	public void onValueSelected(Entry e, int dataSetIndex, Highlight h) {
+		Log.i("VAL SELECTED",
+				"Value: " + e.getVal() + ", xIndex: " + e.getXIndex()
+						+ ", DataSet index: " + dataSetIndex);
+	}
+
+	@Override
+	public void onNothingSelected() {
+		// TODO Auto-generated method stub
+
+	}
+
 
 
 	/**
 	 * Line
 	 */
-
-
-
-	private void initLineChart(View v, OnEntryClickListener lineEntryListener, View.OnClickListener lineClickListener) {
-
-		mLineChart = (LineChartView) (v.findViewById(R.id.linechart));
-		mLineChart.setOnEntryClickListener(lineEntryListener);
-		mLineChart.setOnClickListener(lineClickListener);
-
-		mLineGridPaint = new Paint();
-		mLineGridPaint.setColor(this.getResources().getColor(R.color.line_grid));
-		mLineGridPaint.setPathEffect(new DashPathEffect(new float[]{5, 5}, 0));
-		mLineGridPaint.setStyle(Paint.Style.STROKE);
-		mLineGridPaint.setAntiAlias(true);
-		mLineGridPaint.setStrokeWidth(Tools.fromDpToPx(.75f));
-
-	}
-
-
-	private void updateLineChart() {
-
-		mLineChart.reset();
-
-		LineSet dataSet = new LineSet();
-		dataSet.addPoints(lineLabels, lineValues[0]);
-		dataSet.setDots(true)
-				.setDotsColor(this.getResources().getColor(R.color.line_bg))
-				.setDotsRadius(Tools.fromDpToPx(5))
-				.setDotsStrokeThickness(Tools.fromDpToPx(2))
-				.setDotsStrokeColor(this.getResources().getColor(R.color.line))
-				.setLineColor(this.getResources().getColor(R.color.line))
-				.setLineThickness(Tools.fromDpToPx(3))
-				.beginAt(1).endAt(lineLabels.length - 1);
-		mLineChart.addData(dataSet);
-
-		dataSet = new LineSet();
-		dataSet.addPoints(lineLabels, lineValues[1]);
-		dataSet.setLineColor(this.getResources().getColor(R.color.line))
-				.setLineThickness(Tools.fromDpToPx(3))
-				.setSmooth(true)
-				.setDashed(true);
-		mLineChart.addData(dataSet);
-
-		mLineChart.setBorderSpacing(Tools.fromDpToPx(4))
-				.setGrid(LineChartView.GridType.HORIZONTAL, mLineGridPaint)
-				.setXAxis(false)
-				.setXLabels(XController.LabelPosition.OUTSIDE)
-				.setYAxis(false)
-				.setYLabels(YController.LabelPosition.OUTSIDE)
-				.setAxisBorderValues(LINE_MIN, LINE_MAX, 2)
-				.setLabelsFormat(new DecimalFormat("##'u'"))
-				.show(getAnimation(true).setEndAction(mEnterEndAction))
-		//.show()
-		;
-
-		mLineChart.animateSet(1, new DashAnimation());
-	}
-
-
-	@SuppressLint("NewApi")
-	private void showLineTooltip(LayoutInflater inflater, int setIndex, int entryIndex, Rect rect) {
-
-		mLineTooltip = (TextView) inflater.inflate(R.layout.circular_tooltip, null);
-		mLineTooltip.setText(Integer.toString((int) lineValues[setIndex][entryIndex]));
-
-		RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams((int) Tools.fromDpToPx(35), (int) Tools.fromDpToPx(35));
-		layoutParams.leftMargin = rect.centerX() - layoutParams.width / 2;
-		layoutParams.topMargin = rect.centerY() - layoutParams.height / 2;
-		mLineTooltip.setLayoutParams(layoutParams);
-
-		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-			mLineTooltip.setPivotX(layoutParams.width / 2);
-			mLineTooltip.setPivotY(layoutParams.height / 2);
-			mLineTooltip.setAlpha(0);
-			mLineTooltip.setScaleX(0);
-			mLineTooltip.setScaleY(0);
-			mLineTooltip.animate()
-					.setDuration(150)
-					.alpha(1)
-					.scaleX(1).scaleY(1)
-					.rotation(360)
-					.setInterpolator(enterInterpolator);
-		}
-
-		mLineChart.showTooltip(mLineTooltip);
-	}
-
-
-	@SuppressLint("NewApi")
-	private void dismissLineTooltip(final LayoutInflater inflator, final int setIndex, final int entryIndex, final Rect rect) {
-
-		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			mLineTooltip.animate()
-					.setDuration(100)
-					.scaleX(0).scaleY(0)
-					.alpha(0)
-					.setInterpolator(exitInterpolator).withEndAction(new Runnable() {
-				@Override
-				public void run() {
-					mLineChart.removeView(mLineTooltip);
-					mLineTooltip = null;
-					if (entryIndex != -1)
-						showLineTooltip(inflator, setIndex, entryIndex, rect);
-				}
-			});
-		} else {
-			mLineChart.dismissTooltip(mLineTooltip);
-			mLineTooltip = null;
-			if (entryIndex != -1)
-				showLineTooltip(inflator, setIndex, entryIndex, rect);
-		}
-	}
-
-
-	private void updateValues(LineChartView chartView) {
-
-		chartView.updateValues(0, lineValues[1]);
-		chartView.updateValues(1, lineValues[0]);
-		chartView.notifyDataUpdate();
-	}
-
-	private Animation getAnimation(boolean newAnim) {
-		if (newAnim)
-			return new Animation()
-					.setAlpha(mCurrAlpha)
-					.setEasing(mCurrEasing)
-					.setOverlap(mCurrOverlapFactor, mCurrOverlapOrder)
-					.setStartPoint(mCurrStartX, mCurrStartY);
-		else
-			return new Animation()
-					.setAlpha(mOldAlpha)
-					.setEasing(mOldEasing)
-					.setOverlap(mOldOverlapFactor, mOldOverlapOrder)
-					.setStartPoint(mOldStartX, mOldStartY);
-	}
-
-
-	private void initMenu(View v) {
-
-		mPlayBtn = (ImageButton) (v.findViewById(R.id.play));
-		mPlayBtn.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				mPlayBtn.setImageResource(R.drawable.play);
-				mPlayBtn.setBackgroundResource(R.drawable.button);
-				mPlayBtn.setEnabled(false);
-
-				mLineChart.dismissAllTooltips();
-				mLineTooltip = null;
-
-
-				if (mNewInstance) {
-					mLineChart.dismiss(getAnimation(false).setEndAction(null));
-
-				} else {
-					updateValues(mLineChart);
-
-				}
-				mNewInstance = !mNewInstance;
-			}
-		});
-
-
-		mOrderBtn = (ImageButton) (v.findViewById(R.id.order));
-		mOrderBtn.setOnClickListener(new View.OnClickListener() {
-			private int index = 1;
-
-			@Override
-			public void onClick(View v) {
-				setOverlap(index++);
-				index = onClickChange(index, 4);
-			}
-		});
-
-
-		mEaseBtn = (ImageButton) (v.findViewById(R.id.ease));
-		mEaseBtn.setOnClickListener(new View.OnClickListener() {
-			private int index = 1;
-
-			@Override
-			public void onClick(View v) {
-				setEasing(index++);
-				index = onClickChange(index, 4);
-			}
-		});
-
-
-		mEnterBtn = (ImageButton) (v.findViewById(R.id.enter));
-		mEnterBtn.setOnClickListener(new View.OnClickListener() {
-			private int index = 1;
-
-			@Override
-			public void onClick(View v) {
-				setEnterPosition(index++);
-				index = onClickChange(index, 9);
-			}
-		});
-
-
-		mAlphaBtn = (ImageButton) (v.findViewById(R.id.alpha));
-		mAlphaBtn.setOnClickListener(new View.OnClickListener() {
-			private int index = 1;
-
-			@Override
-			public void onClick(View v) {
-				setAlpha(index++);
-				index = onClickChange(index, 3);
-			}
-		});
-	}
-
-	private void setOverlap(int index) {
-
-		switch (index) {
-			case 0:
-				mCurrOverlapFactor = 1;
-				mCurrOverlapOrder = beginOrder;
-				mOrderBtn.setImageResource(R.drawable.ordere);
-				break;
-			case 1:
-				mCurrOverlapFactor = .5f;
-				mCurrOverlapOrder = beginOrder;
-				mOrderBtn.setImageResource(R.drawable.orderf);
-				break;
-			case 2:
-				mCurrOverlapFactor = .5f;
-				mCurrOverlapOrder = endOrder;
-				mOrderBtn.setImageResource(R.drawable.orderl);
-				break;
-			case 3:
-				mCurrOverlapFactor = .5f;
-				mCurrOverlapOrder = middleOrder;
-				mOrderBtn.setImageResource(R.drawable.orderm);
-				break;
-			default:
-				break;
-		}
-	}
-
-	private int onClickChange(int index, int limit) {
-		mPlayBtn.setBackgroundResource(R.color.button_hey);
-		if (index >= limit)
-			index = 0;
-		mNewInstance = true;
-		return index;
-	}
-
-	private void setEasing(int index) {
-
-		switch (index) {
-			case 0:
-				mCurrEasing = new CubicEaseOut();
-				mEaseBtn.setImageResource(R.drawable.ease_cubic);
-				break;
-			case 1:
-				mCurrEasing = new QuintEaseOut();
-				mEaseBtn.setImageResource(R.drawable.ease_quint);
-				break;
-			case 2:
-				mCurrEasing = new BounceEaseOut();
-				mEaseBtn.setImageResource(R.drawable.ease_bounce);
-				break;
-			case 3:
-				mCurrEasing = new ElasticEaseOut();
-				mEaseBtn.setImageResource(R.drawable.ease_elastic);
-			default:
-				break;
-		}
-	}
-
-	private void setEnterPosition(int index) {
-
-		switch (index) {
-			case 0:
-				mCurrStartX = -1f;
-				mCurrStartY = 0f;
-				mEnterBtn.setImageResource(R.drawable.enterb);
-				break;
-			case 1:
-				mCurrStartX = 0f;
-				mCurrStartY = 0f;
-				mEnterBtn.setImageResource(R.drawable.enterbl);
-				break;
-			case 2:
-				mCurrStartX = 0f;
-				mCurrStartY = -1f;
-				mEnterBtn.setImageResource(R.drawable.enterl);
-				break;
-			case 3:
-				mCurrStartX = 0f;
-				mCurrStartY = 1f;
-				mEnterBtn.setImageResource(R.drawable.entertl);
-				break;
-			case 4:
-				mCurrStartX = -1f;
-				mCurrStartY = 1f;
-				mEnterBtn.setImageResource(R.drawable.entert);
-				break;
-			case 5:
-				mCurrStartX = 1f;
-				mCurrStartY = 1f;
-				mEnterBtn.setImageResource(R.drawable.entertr);
-				break;
-			case 6:
-				mCurrStartX = 1f;
-				mCurrStartY = -1f;
-				mEnterBtn.setImageResource(R.drawable.enterr);
-				break;
-			case 7:
-				mCurrStartX = 1f;
-				mCurrStartY = 0f;
-				mEnterBtn.setImageResource(R.drawable.enterbr);
-				break;
-			case 8:
-				mCurrStartX = .5f;
-				mCurrStartY = .5f;
-				mEnterBtn.setImageResource(R.drawable.enterc);
-				break;
-			default:
-				break;
-		}
-	}
-
-
-	@SuppressLint("NewApi")
-	private void setAlpha(int index) {
-
-		switch (index) {
-			case 0:
-				mCurrAlpha = -1;
-				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN)
-					mAlphaBtn.setImageAlpha(255);
-				else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
-					mAlphaBtn.setAlpha(1f);
-				break;
-			case 1:
-				mCurrAlpha = 2;
-				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN)
-					mAlphaBtn.setImageAlpha(115);
-				else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
-					mAlphaBtn.setAlpha(.6f);
-				break;
-			case 2:
-				mCurrAlpha = 1;
-				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN)
-					mAlphaBtn.setImageAlpha(55);
-				else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
-					mAlphaBtn.setAlpha(.3f);
-				break;
-			default:
-				break;
-		}
-	}
 
 	public static float[] ItoFloat(LinkedList<Integer> d) {
 		float[] floatArray = new float[d.size()+1];
@@ -732,5 +468,52 @@ public class SuperAwesomeCardFragment extends Fragment {
 			s[i] = String.valueOf(d.get(j));
 
 		return s;
+	}
+
+	private class DataHolder implements Comparable{
+		int thread;
+		float time;
+		int points;
+
+		public DataHolder(int thread, float time, int points) {
+			this.thread = thread;
+			this.time = time;
+			this.points = points;
+		}
+
+		public int getThread() {
+			return thread;
+		}
+
+		public void setThread(int thread) {
+			this.thread = thread;
+		}
+
+		public float getTime() {
+			return time;
+		}
+
+		public void setTime(float time) {
+			this.time = time;
+		}
+
+		public int getPoints() {
+			return points;
+		}
+
+		public void setPoints(int points) {
+			this.points = points;
+		}
+
+
+
+		@Override
+		public int compareTo(Object another) {
+			if(((DataHolder)another).getPoints()>this.getPoints())
+				return 1;
+			else if(((DataHolder)another).getPoints()<this.getPoints())
+			return -1;
+			else return 0;
+		}
 	}
 }

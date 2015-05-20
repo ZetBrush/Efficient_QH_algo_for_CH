@@ -59,12 +59,19 @@ public abstract class ConvexHull implements Runnable {
 
             Log.d("Duration  ", String.valueOf(duration));
         if(SuperAwesomeCardFragment.algorithmIndex==2) {
-            SuperAwesomeCardFragment.timeResultQuick.add(duration);
-            SuperAwesomeCardFragment.timeResultGraham.add(duration);
+           float dur = new Float(duration);
             pointCloud.toast("Completed QuickHull");
-            listener.jobDone(2);
+            listener.jobDone(2,dur);
 
         }
+        else if(SuperAwesomeCardFragment.algorithmIndex==3) {
+            float dur = new Float(duration);
+            pointCloud.toast("Completed GrahamScan");
+            listener.jobDone(3,dur);
+
+        }
+
+
 
             active = false;
         }
